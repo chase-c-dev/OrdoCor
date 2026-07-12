@@ -1,0 +1,42 @@
+OrdoCor Non-Commercial Public Modification License
+
+Copyright (c) 2026 chase-c-dev
+
+Original code created by chase-c-dev. Credit to chase-c-dev must be preserved in all copies,
+modifications, forks, distributions, and public references to this project.
+
+Permission is granted to view, use, copy, and modify this software and associated documentation
+files (the "Software") for personal, educational, research, and other non-commercial purposes,
+subject to the conditions below.
+
+1. No Commercial Use
+
+The Software may not be sold, licensed for a fee, rented, monetized, included in a paid product,
+used to provide paid services, or otherwise used for commercial advantage without prior written
+permission from the original author.
+
+2. Public Source Requirement
+
+Any modification, fork, derivative work, or adapted version of the Software must be made publicly
+available with its complete corresponding source code. The public source must include this license
+and must clearly state that the work is based on OrdoCor, originally created by chase-c-dev.
+
+3. Same Terms Required
+
+Modified versions and derivative works must be distributed under these same license terms. You may
+not relicense the Software, modified versions, or derivative works under a more restrictive,
+closed-source, proprietary, or commercial license.
+
+4. Attribution
+
+All copies, forks, modified versions, derivative works, and distributions must preserve credit to
+chase-c-dev as the original creator of OrdoCor.
+
+5. No Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, SECURITY,
+PRIVACY, OR NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY
+CLAIM, DAMAGES, DATA LOSS, SECURITY ISSUE, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.

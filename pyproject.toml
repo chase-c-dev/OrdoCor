@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ordocor"
+version = "1.0.0"
+description = "Offline-first personal life management desktop app."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "PySide6>=6.7,<7",
+    "yfinance>=0.2.54,<1",
+]
+license = { file = "LICENSE" }
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8,<9",
+    "pytest-cov>=5,<8",
+    "ruff>=0.5,<1",
+    "pyinstaller>=6,<7",
+]
+
+[project.scripts]
+ordocor = "ordocor.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ordocor = ["assets/*.svg", "assets/*.ico", "data/migrations/*.sql"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+tmp_path_retention_policy = "failed"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--cov=ordocor",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--cov-fail-under=100",
+    "--basetemp=test_outputs",
+]
+norecursedirs = ["AppData", "Local", "Temp", "venv", ".git"]
+
+[tool.coverage.run]
+source = ["ordocor"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true

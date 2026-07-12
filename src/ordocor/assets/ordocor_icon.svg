@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="plate" x1="56" y1="36" x2="206" y2="228" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#263340"/>
+      <stop offset="0.58" stop-color="#141C25"/>
+      <stop offset="1" stop-color="#0D131A"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="63" y1="53" x2="190" y2="204" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D9C7A3"/>
+      <stop offset="0.48" stop-color="#8FAFD6"/>
+      <stop offset="1" stop-color="#667F9F"/>
+    </linearGradient>
+    <linearGradient id="core" x1="141" y1="72" x2="197" y2="187" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F1E2BD"/>
+      <stop offset="0.52" stop-color="#9DBBE0"/>
+      <stop offset="1" stop-color="#5F7592"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="46" fill="url(#plate)"/>
+  <circle cx="128" cy="128" r="84" fill="none" stroke="#0A0F15" stroke-width="22"/>
+  <circle cx="128" cy="128" r="84" fill="none" stroke="url(#ring)" stroke-width="16"/>
+  <path
+    d="M188 67 C155 74 130 99 130 128 C130 157 155 182 188 189 C172 205 151 214 128 214 C80.5 214 42 175.5 42 128 C42 80.5 80.5 42 128 42 C151 42 172 51 188 67 Z"
+    fill="#111821"
+  />
+  <path
+    d="M189 71 C160 79 138 102 138 128 C138 154 160 177 189 185"
+    fill="none"
+    stroke="url(#core)"
+    stroke-width="16"
+    stroke-linecap="round"
+  />
+  <circle cx="188" cy="71" r="7" fill="#D9C7A3"/>
+  <circle cx="188" cy="185" r="7" fill="#8FAFD6"/>
+  <circle cx="138" cy="128" r="6" fill="#F1E2BD"/>
+</svg>
