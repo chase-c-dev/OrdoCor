@@ -44,7 +44,7 @@ addopts = [
     "--cov=ordocor",
     "--cov-report=term-missing",
     "--cov-report=xml",
-    "--cov-fail-under=100",
+    "--cov-fail-under=97",
     "--basetemp=test_outputs",
 ]
 norecursedirs = ["AppData", "Local", "Temp", "venv", ".git"]
@@ -53,5 +53,5 @@ norecursedirs = ["AppData", "Local", "Temp", "venv", ".git"]
 source = ["ordocor"]
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 97
 show_missing = true

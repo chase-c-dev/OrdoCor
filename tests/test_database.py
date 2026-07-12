@@ -122,8 +122,8 @@ def test_moonlit_is_default_and_selected_theme_persists(tmp_path):
     manager.apply("Moonlit", persist=False)
     assert manager.current_theme == "Moonlit"
     widget.close()
-    app.removeEventFilter(manager)
-    app.removeEventFilter(restored_manager)
+    manager.close()
+    restored_manager.close()
     manager.setParent(None)
     restored_manager.setParent(None)
     manager.deleteLater()

@@ -17,6 +17,7 @@ from ordocor.ui.pages.investing.mutual_funds import MutualFundDialog
 from ordocor.ui.pages.investing.plans import InvestmentPlanDialog
 from ordocor.ui.pages.investing.stocks import StockDialog
 from ordocor.ui.pages.projects.dialog import ProjectDialog
+from ordocor.ui.pages.property_dialogs import FieldSpec, PropertyFormDialog
 from ordocor.ui.pages.recipes.dialog import RecipeDialog
 from ordocor.ui.pages.travel.dialog import TravelDestinationDialog
 from ordocor.ui.pages.vehicle.page import (
@@ -266,3 +267,22 @@ def test_life_module_dialogs_round_trip(qapp):
         vehicle_wishlist,
     ):
         dialog.close()
+
+
+def test_property_form_number_and_empty_integer_text(qapp):
+    dialog = PropertyFormDialog(
+        None,
+        "Numbers",
+        (
+            FieldSpec("count", "Count", "number"),
+            FieldSpec("year", "Year", "integer_text"),
+        ),
+        {"count": 7, "year": ""},
+    )
+
+    data = dialog.form_data()
+    assert data["count"] == 7
+    assert data["year"] is None
+    dialog.inputs["year"].setText("2029")
+    assert dialog.form_data()["year"] == 2029
+    dialog.close()

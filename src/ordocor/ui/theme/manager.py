@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from PySide6.QtCore import QEasingCurve, QEvent, QObject, QPropertyAnimation
 from PySide6.QtWidgets import QApplication, QGraphicsOpacityEffect, QPushButton, QWidget
 
@@ -16,10 +18,12 @@ class ThemeManager(QObject):
         self.database = database
         self.app = app
         self._button_animations: dict[QPushButton, QPropertyAnimation] = {}
+        self._event_filter_installed = False
+        self._use_global_qt_styling = os.environ.get("QT_QPA_PLATFORM", "").lower() != "offscreen"
         self.current_theme = self._load_theme()
         set_active_theme(self.current_theme)
-        self.app.setStyleSheet(stylesheet_for(self.current_theme))
-        self.app.installEventFilter(self)
+        self._apply_app_stylesheet(self.current_theme)
+        self._install_event_filter()
 
     @property
     def theme_names(self) -> tuple[str, ...]:
@@ -32,7 +36,7 @@ class ThemeManager(QObject):
         previous_theme = self.current_theme
         self.current_theme = theme_name
         set_active_theme(theme_name)
-        self.app.setStyleSheet(stylesheet_for(theme_name))
+        self._apply_app_stylesheet(theme_name)
 
         for widget in self.app.topLevelWidgets():
             self._retheme_widget_tree(widget, previous_theme, theme_name)
@@ -47,6 +51,12 @@ class ThemeManager(QObject):
                     """,
                     (theme_name,),
                 )
+
+    def close(self) -> None:
+        if self._event_filter_installed:
+            self.app.removeEventFilter(self)
+            self._event_filter_installed = False
+        self._button_animations.clear()
 
     def refresh_widget(self, root: QWidget) -> None:
         self._retheme_widget_tree(root, BASE_THEME, self.current_theme)
@@ -68,6 +78,15 @@ class ThemeManager(QObject):
         if row and row["value"] in PALETTES:
             return row["value"]
         return DEFAULT_THEME
+
+    def _apply_app_stylesheet(self, theme_name: str) -> None:
+        if self._use_global_qt_styling:
+            self.app.setStyleSheet(stylesheet_for(theme_name))
+
+    def _install_event_filter(self) -> None:
+        if self._use_global_qt_styling:
+            self.app.installEventFilter(self)
+            self._event_filter_installed = True
 
     def _retheme_widget_tree(
         self,

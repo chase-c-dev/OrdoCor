@@ -358,4 +358,7 @@ def test_main_window_screen_security_sync(qapp, database, theme_manager, monkeyp
     window._sync_screen_security(False)
     assert cleared == [window]
 
+    window._handle_screen_security_changed(True)
+    assert protected == [window, window]
+
     window.close()

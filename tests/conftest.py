@@ -30,7 +30,7 @@ def database(tmp_path) -> Database:
 def theme_manager(qapp, database) -> ThemeManager:
     manager = ThemeManager(database, qapp)
     yield manager
-    qapp.removeEventFilter(manager)
+    manager.close()
     manager.setParent(None)
     manager.deleteLater()
     qapp.processEvents()
