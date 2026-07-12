@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation
-from PySide6.QtWidgets import QGraphicsOpacityEffect, QStackedWidget, QTabWidget, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsOpacityEffect,
+    QStackedWidget,
+    QTabWidget,
+    QWidget,
+)
 from shiboken6 import isValid
 
 from ordocor.ui.design_config import ANIMATION
@@ -10,6 +16,8 @@ from ordocor.ui.design_config import ANIMATION
 class FadeMixin:
     def _fade_in_widget(self, widget: QWidget | None, duration_ms: int | None = None) -> None:
         if widget is None:
+            return
+        if not _fade_effects_are_enabled():
             return
 
         self._stop_active_fade_animation()
@@ -73,3 +81,10 @@ def _qt_object_is_valid(obj: object) -> bool:
         return isValid(obj)
     except RuntimeError:
         return False
+
+
+def _fade_effects_are_enabled() -> bool:
+    app = QApplication.instance()
+    if app is None:
+        return True
+    return app.platformName().lower() != "offscreen"

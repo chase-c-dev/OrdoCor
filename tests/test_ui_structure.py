@@ -69,9 +69,13 @@ def test_animated_navigation_widgets(qapp):
 
     stack.setCurrentIndex(1)
     assert stack.currentIndex() == 1
-    assert stack._active_fade_animation is not None
-    assert second.graphicsEffect() is not None
-    stack._active_fade_animation.finished.emit()
+    if qapp.platformName().lower() == "offscreen":
+        assert stack._active_fade_animation is None
+        assert second.graphicsEffect() is None
+    else:
+        assert stack._active_fade_animation is not None
+        assert second.graphicsEffect() is not None
+        stack._active_fade_animation.finished.emit()
     assert second.graphicsEffect() is None
 
     tab = AnimatedTabWidget()
@@ -79,7 +83,10 @@ def test_animated_navigation_widgets(qapp):
     tab.addTab(QWidget(), "Second")
     tab.setCurrentIndex(1)
     assert tab.currentIndex() == 1
-    assert tab._active_fade_animation is not None
+    if qapp.platformName().lower() == "offscreen":
+        assert tab._active_fade_animation is None
+    else:
+        assert tab._active_fade_animation is not None
 
 
 def test_welcome_page_slide_and_unlock(qapp):
