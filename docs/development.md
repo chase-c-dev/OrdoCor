@@ -45,6 +45,6 @@ Electron Builder creates the portable Windows executable at `release\OrdoCor.exe
 `frontend/dist`, `release`, coverage, and dependency folders are ignored by Git.
 
 The executable includes the official PolyForm Noncommercial 1.0.0 license and OrdoCor's required
-attribution notices in its extracted `resources` directory. Distribute both root `LICENSE` and
+attribution notices in its extracted `resources` directory. Distribute both root `LICENSE.md` and
 `NOTICE` files with source copies. Preserve the official license text; project attribution is
 declared separately in `NOTICE` using PolyForm's supported required-notice mechanism.

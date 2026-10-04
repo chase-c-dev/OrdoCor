@@ -61,7 +61,7 @@
     ],
     "electronDist": "node_modules/electron/dist",
     "extraResources": [
-      { "from": "../LICENSE", "to": "LICENSE" },
+      { "from": "../LICENSE.md", "to": "LICENSE.md" },
       { "from": "../NOTICE", "to": "NOTICE" }
     ],
     "npmRebuild": false,

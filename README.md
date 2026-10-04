@@ -90,7 +90,7 @@ requests.
 
 ## License
 
-OrdoCor is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). You may use, modify, and
+OrdoCor is licensed under [PolyForm Noncommercial 1.0.0](LICENSE.md). You may use, modify, and
 redistribute it for purposes permitted by that license. Commercial use outside those permissions
 requires a separate license from the copyright owner. Copies must include the license text or its
 URL and preserve the `chase-c-dev` credit in [NOTICE](NOTICE).
