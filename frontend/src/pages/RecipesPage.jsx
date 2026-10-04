@@ -177,7 +177,7 @@ export function RecipesPage() {
                 <BookOpen size={34} />
                 <span>Recipe image</span>
               </div>
-              <button className="image-upload" onClick={uploadImage}>
+              <button className="button ghost image-upload" onClick={uploadImage}>
                 <ImagePlus size={16} /> Choose image
               </button>
             </div>

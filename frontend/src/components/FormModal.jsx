@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Save, Trash2 } from "lucide-react";
 import { Modal } from "./Modal";
+import { DateField } from "./DateField";
 
 function initialValues(fields, item) {
   return Object.fromEntries(
@@ -125,6 +126,8 @@ function FormField({ field, value, onChange }) {
             <option key={option}>{option}</option>
           ))}
         </select>
+      ) : field.type === "date" ? (
+        <DateField {...common} label={field.label} />
       ) : field.type === "number" ? (
         <div className="number-input">
           <input

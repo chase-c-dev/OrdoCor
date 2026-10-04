@@ -32,6 +32,18 @@ Protected backups are intended for the same Windows account. Protected `.ordocor
 the retired Python release used a different wrapper and should be restored with that release before
 upgrading; the normal on-disk database itself remains compatible.
 
+## Erase Personal Data
+
+**Settings > Wipe database** asks for confirmation, then deletes all personal records,
+recipe images, market-history cache, preferences, password metadata, and backup timestamps.
+The schema and migration history remain intact. OrdoCor reloads to its first-run setup;
+Moonlit and screen capture resistance become the defaults again.
+
+Deletion is transactional. SQLite secure deletion, WAL truncation, and vacuuming remove
+deleted content from the active database files. This is not a guarantee of forensic erasure
+from SSDs, filesystem snapshots, or other copies. Existing backup files are not deleted;
+remove unwanted copies separately. Tests use temporary databases, not your personal database.
+
 ## Limits
 
 The optional password controls entry to the application, and protected backup files are encrypted.

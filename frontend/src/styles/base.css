@@ -1,5 +1,6 @@
 :root,
 [data-theme="moonlit"] {
+  color-scheme: dark;
   --sidebar-width: 14rem;
   --page-max-width: 92.5rem;
   --page-padding-inline: clamp(1.125rem, 3vw, 2.625rem);

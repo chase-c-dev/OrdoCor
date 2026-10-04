@@ -11,6 +11,7 @@ app.setName('OrdoCor')
 if (process.env.LOCALAPPDATA) app.setPath('userData', path.join(process.env.LOCALAPPDATA, 'OrdoCor'))
 
 let mainWindow; let database; let passwords; let backups; let unlocked = false
+let dataGeneration = 0
 const gotLock = app.requestSingleInstanceLock()
 if (!gotLock) app.quit()
 
@@ -74,7 +75,7 @@ async function route(rawPath, options = {}) {
   if (pathname === '/auth/password' && method === 'POST') { if (passwords.isEnabled() && !passwords.verify(body.currentPassword || '')) throw new AppError('The current password was not correct.', 401); passwords.setPassword(body.password || ''); unlocked = true; return { enabled: true } }
   if (pathname === '/auth/password' && method === 'DELETE') { if (passwords.isEnabled() && !passwords.verify(body.password || '')) throw new AppError('The password was not correct.', 401); passwords.disable(); unlocked = true; return { enabled: false } }
   if (pathname === '/auth/setup-skip' && method === 'POST') { passwords.markPromptSeen(); unlocked = true; return { unlocked: true } }
-  if (pathname === '/quit' && method === 'POST') { setTimeout(() => app.quit(), 50); return { closing: true } }
+  if (pathname === '/quit' && method === 'POST') { setImmediate(() => app.quit()); return { closing: true } }
 
   const resourceMatch = pathname.match(/^\/resources\/([^/]+)(?:\/(\d+))?$/)
   if (resourceMatch) {
@@ -92,19 +93,29 @@ async function route(rawPath, options = {}) {
 
   const refreshMatch = pathname.match(/^\/market\/([^/]+)\/refresh$/)
   if (refreshMatch && method === 'POST') {
+    const generation = dataGeneration
     const mapping = MARKET_RESOURCES[refreshMatch[1]]; if (!mapping) throw new AppError('Unknown market resource.', 404)
     const [table, column] = mapping; const symbols = database.db.prepare(`SELECT DISTINCT ${column} AS symbol FROM ${table} WHERE TRIM(${column}) != ''`).all()
     let updated = 0; let failed = 0
-    for (const row of symbols) { try { const result = await market.quote(row.symbol); database.db.prepare(`UPDATE ${table} SET market_price = ?, dividend_yield = ?, market_updated_at = ? WHERE UPPER(${column}) = ?`).run(result.market_price, result.dividend_yield, result.fetched_at, result.ticker); updated++ } catch { failed++ } }
+    for (const row of symbols) { if (generation !== dataGeneration) break; try { const result = await market.quote(row.symbol); if (generation !== dataGeneration) break; database.db.prepare(`UPDATE ${table} SET market_price = ?, dividend_yield = ?, market_updated_at = ? WHERE UPPER(${column}) = ?`).run(result.market_price, result.dividend_yield, result.fetched_at, result.ticker); updated++ } catch { failed++ } }
     return { updated, failed }
   }
   const historyMatch = pathname.match(/^\/market\/([^/]+)\/history$/)
-  if (historyMatch) { const symbol = decodeURIComponent(historyMatch[1]).toUpperCase(); try { const rows = await market.history(symbol); database.cacheHistory(symbol, rows); return rows } catch { const cached = database.history(symbol); if (cached.length) return cached; throw new AppError('Market history is unavailable.', 503) } }
+  if (historyMatch) { const generation = dataGeneration; const symbol = decodeURIComponent(historyMatch[1]).toUpperCase(); try { const rows = await market.history(symbol); if (generation !== dataGeneration) throw new AppError('The database was reset.', 409); database.cacheHistory(symbol, rows); return rows } catch { const cached = database.history(symbol); if (cached.length) return cached; throw new AppError('Market history is unavailable.', 503) } }
   const infoMatch = pathname.match(/^\/market\/([^/]+)\/fundamentals$/)
   if (infoMatch) { try { return await market.fundamentals(decodeURIComponent(infoMatch[1])) } catch { throw new AppError('More information is unavailable.', 503) } }
 
   if (pathname === '/settings' && method === 'GET') return { theme: database.getSetting('color_palette') || 'Moonlit', lastBackup: database.getSetting('last_backup_created_at'), passwordEnabled: passwords.isEnabled(), screenCaptureEnabled: screenCaptureEnabled() }
   if (pathname === '/settings' && method === 'PUT') { if (body.theme) database.setSetting('color_palette', body.theme); if (typeof body.screenCaptureEnabled === 'boolean') { database.setSetting('screen_capture_resistance_enabled', body.screenCaptureEnabled ? '1' : '0'); mainWindow.setContentProtection(body.screenCaptureEnabled) } return { saved: true } }
+  if (pathname === '/database/wipe' && method === 'POST') {
+    if (body.confirm !== true) throw new AppError('Confirm database deletion before continuing.', 422)
+    dataGeneration++
+    const result = database.wipePersonalData()
+    passwords = new PasswordService(database)
+    unlocked = true
+    mainWindow.setContentProtection(true)
+    return result
+  }
   if (pathname === '/backup' && method === 'POST') { const result = await dialog.showSaveDialog(mainWindow, { title: 'Backup OrdoCor Database', defaultPath: `ordocor-backup-${new Date().toISOString().slice(0, 10)}.ordocorbackup`, filters: [{ name: 'OrdoCor Backup', extensions: ['ordocorbackup'] }] }); if (result.canceled) return { canceled: true }; await backups.create(result.filePath); return { saved: true } }
   if (pathname === '/backup/restore' && method === 'POST') { const result = await dialog.showOpenDialog(mainWindow, { title: 'Load OrdoCor Database Backup', properties: ['openFile'], filters: [{ name: 'OrdoCor Backup', extensions: ['ordocorbackup', 'sqlite3', 'db'] }] }); if (result.canceled) return { canceled: true }; backups.restore(result.filePaths[0]); passwords = new PasswordService(database); unlocked = !passwords.isEnabled(); return { restored: true } }
   if (pathname === '/recipe-image/select' && method === 'POST') { const result = await dialog.showOpenDialog(mainWindow, { title: 'Select Recipe Image', properties: ['openFile'], filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp'] }] }); if (result.canceled) return { canceled: true }; const filePath = result.filePaths[0]; return { name: path.basename(filePath), bytes: [...fs.readFileSync(filePath)] } }

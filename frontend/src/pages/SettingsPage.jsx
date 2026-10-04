@@ -7,6 +7,7 @@ import {
   Palette,
   RotateCcw,
   ShieldCheck,
+  Trash2,
   Upload,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ export function SettingsPage({ onClose, theme, onTheme }) {
   const [settings, setSettings] = useState(null);
   const [message, setMessage] = useState("");
   const [passwordMode, setPasswordMode] = useState(false);
+  const [wiping, setWiping] = useState(false);
 
   useEffect(() => {
     api("/settings").then(setSettings);
@@ -57,9 +59,30 @@ export function SettingsPage({ onClose, theme, onTheme }) {
     });
   }
 
+  async function wipeDatabase() {
+    if (!window.confirm(
+      "Permanently erase ALL OrdoCor database records, images, notes, cached market data, settings, and password information? This cannot be undone. Existing backup files will not be deleted. Create a backup first if you need one.",
+    )) return;
+
+    setWiping(true);
+    setPasswordMode(false);
+    setMessage("");
+    try {
+      await api("/database/wipe", {
+        method: "POST",
+        body: JSON.stringify({ confirm: true }),
+      });
+      window.location.reload();
+    } catch (error) {
+      setMessage(error.message);
+      setWiping(false);
+    }
+  }
+
   return (
     <Modal title="Settings" onClose={onClose} size="settings-modal">
       <div className="settings-sections">
+        <fieldset disabled={wiping} className="settings-controls">
         <section>
           <div className="settings-title">
             <Palette />
@@ -153,6 +176,22 @@ export function SettingsPage({ onClose, theme, onTheme }) {
               : "Enable password"}
           </button>
         </section>
+        <section>
+          <div className="settings-title">
+            <Trash2 />
+            <div>
+              <h3>Erase personal data</h3>
+              <p>
+                Permanently delete all database content and reset OrdoCor.
+                Saved backup files are not deleted.
+              </p>
+            </div>
+          </div>
+          <button className="button danger" onClick={wipeDatabase} disabled={wiping}>
+            <Trash2 size={16} /> {wiping ? "Erasing..." : "Wipe database"}
+          </button>
+        </section>
+        </fieldset>
       </div>
       {message && <div className="notice">{message}</div>}
       {passwordMode && (

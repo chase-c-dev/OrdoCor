@@ -24,6 +24,44 @@ afterEach(() => {
 })
 
 describe('desktop data services', () => {
+  it('wipes records, images, caches, and credentials while retaining a usable schema', () => {
+    const directory = temporaryDirectory()
+    const database = new OrdoCorDatabase(path.join(directory, 'ordocor.sqlite3'))
+    try {
+      const marker = 'PRIVATE-WIPE-TEST-UNIQUE-CONTENT'
+      database.create('todos', { title: marker })
+      database.db.prepare('INSERT INTO recipes (name, image_data, image_name) VALUES (?, ?, ?)').run(marker, Buffer.from(marker), 'private.jpg')
+      database.cacheHistory('PRIVATE', [{ price_date: '2026-01-01', close_price: 10 }])
+      database.setSetting('color_palette', 'Woodland')
+      new PasswordService(database).setPassword('temporary-test-password')
+      database.db.prepare('INSERT INTO schema_migrations (version) VALUES (?)').run('wipe-test')
+
+      expect(database.wipePersonalData()).toEqual({ wiped: true })
+      const tables = database.db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name != 'schema_migrations'").all()
+      for (const { name } of tables) expect(database.db.prepare(`SELECT COUNT(*) AS count FROM "${name}"`).get().count).toBe(0)
+      expect(database.db.prepare('SELECT version FROM schema_migrations').get().version).toBe('wipe-test')
+      expect(database.db.pragma('foreign_keys', { simple: true })).toBe(1)
+      expect(database.db.pragma('integrity_check', { simple: true })).toBe('ok')
+      expect(new PasswordService(database).isEnabled()).toBe(false)
+      expect(fs.readFileSync(database.filePath).includes(Buffer.from(marker))).toBe(false)
+      expect(fs.statSync(database.filePath + '-wal').size).toBe(0)
+      expect(database.create('todos', { title: 'Fresh start' }).id).toBe(1)
+    } finally { database.close() }
+  })
+
+  it('rolls back a failed wipe and restores foreign-key enforcement', () => {
+    const database = new OrdoCorDatabase(path.join(temporaryDirectory(), 'ordocor.sqlite3'))
+    try {
+      database.create('todos', { title: 'Keep on failure' })
+      database.setSetting('color_palette', 'Woodland')
+      database.db.exec("CREATE TRIGGER prevent_test_wipe BEFORE DELETE ON todo_items BEGIN SELECT RAISE(ABORT, 'test failure'); END")
+      expect(() => database.wipePersonalData()).toThrow('test failure')
+      expect(database.list('todos')).toHaveLength(1)
+      expect(database.getSetting('color_palette')).toBe('Woodland')
+      expect(database.db.pragma('foreign_keys', { simple: true })).toBe(1)
+    } finally { database.close() }
+  })
+
   it('formats analyst consensus, trend counts, and weight ratings', () => {
     const recommendations = analystRecommendations({
       financialData: { recommendationKey: 'buy', recommendationMean: 1.8, numberOfAnalystOpinions: 12, targetMeanPrice: 42 },

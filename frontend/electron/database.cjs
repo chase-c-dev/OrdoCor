@@ -23,6 +23,24 @@ class OrdoCorDatabase {
 
   close() { if (this.db?.open) this.db.close() }
 
+  wipePersonalData() {
+    const tables = this.db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name != 'schema_migrations'").all()
+    this.db.pragma('secure_delete = ON')
+    this.db.pragma('foreign_keys = OFF')
+    try {
+      this.db.transaction(() => {
+        for (const { name } of tables) this.db.exec(`DELETE FROM "${name.replaceAll('"', '""')}"`)
+        if (this.db.prepare("SELECT 1 FROM sqlite_master WHERE name = 'sqlite_sequence'").get()) this.db.exec('DELETE FROM sqlite_sequence')
+      })()
+    } finally {
+      this.db.pragma('foreign_keys = ON')
+    }
+    this.db.pragma('wal_checkpoint(TRUNCATE)')
+    this.db.exec('VACUUM')
+    this.db.pragma('wal_checkpoint(TRUNCATE)')
+    return { wiped: true }
+  }
+
   resource(name) {
     const value = RESOURCES[name]
     if (!value) throw new AppError('Unknown resource.', 404)

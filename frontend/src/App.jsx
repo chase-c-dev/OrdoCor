@@ -47,7 +47,6 @@ export function App() {
   const [settings, setSettings] = useState(false);
   const [theme, setTheme] = useState("Moonlit");
   const [menu, setMenu] = useState(false);
-  const [quitting, setQuitting] = useState(false);
 
   useEffect(() => {
     if (hasSessionToken())
@@ -85,18 +84,7 @@ export function App() {
         onStatus={setStatus}
       />
     );
-  if (quitting)
-    return (
-      <div className="boot-screen">
-        <Heart />
-        <strong>OrdoCor is closing.</strong>
-        <span>Your local data has been saved.</span>
-      </div>
-    );
-
   async function quit() {
-    if (!window.confirm("Close OrdoCor?")) return;
-    setQuitting(true);
     try {
       await api("/quit", { method: "POST" });
     } catch {
