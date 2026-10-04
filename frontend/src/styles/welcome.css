@@ -1,0 +1,110 @@
+.welcome-screen,
+.boot-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.welcome-card {
+  width: min(28.75rem, 100%);
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 1.875rem 5rem var(--shadow);
+  padding: clamp(1.75rem, 4vw, 2.625rem);
+  animation: welcome-drop 0.7s cubic-bezier(0.18, 0.86, 0.22, 1) both;
+}
+
+@keyframes welcome-drop {
+  from {
+    transform: translateY(-5rem);
+    opacity: 0;
+  }
+}
+
+.welcome-card.unlocking {
+  animation: welcome-exit 0.55s ease forwards;
+}
+
+@keyframes welcome-exit {
+  to {
+    transform: translateY(5.625rem);
+    opacity: 0;
+  }
+}
+
+.lock-orbit {
+  width: 4.5rem;
+  height: 4.5rem;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1.5rem;
+  color: var(--accent-strong);
+  border: 1px solid var(--accent);
+  transform: rotate(45deg);
+}
+
+.lock-orbit svg {
+  width: 1.9375rem;
+  height: 1.9375rem;
+  transform: rotate(-45deg);
+}
+
+.welcome-card h1 {
+  font-size: 2.6875rem;
+}
+
+.welcome-card p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.welcome-card input {
+  margin-bottom: 0.75rem;
+}
+
+.enter-button {
+  width: 100%;
+  margin-top: 0.875rem;
+  background: var(--accent);
+  color: #10121a;
+  border-color: var(--accent);
+  justify-content: space-between;
+  padding: 0.6875rem 0.875rem;
+}
+
+.boot-screen {
+  align-content: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.boot-screen svg {
+  color: var(--accent);
+  width: 2.125rem;
+  height: 2.125rem;
+}
+
+.boot-screen strong {
+  color: var(--text);
+  font-size: 1.125rem;
+}
+
+.pulse {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.12);
+    opacity: 0.7;
+  }
+}
+
+.mobile-menu,
+.mobile-close {
+  display: none;
+}

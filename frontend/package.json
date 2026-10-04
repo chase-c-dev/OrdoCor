@@ -1,0 +1,77 @@
+{
+  "name": "ordocor",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@11.18.0",
+  "description": "Offline-first life management application",
+  "main": "electron/main.cjs",
+  "author": "chase-c-dev",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build": "vite build",
+    "package": "pnpm run build && pnpm run rebuild:electron && electron-builder --win portable --publish never",
+    "rebuild:electron": "electron-rebuild --force --which-module better-sqlite3",
+    "test:layout": "pnpm run build && electron scripts/check-detail-layout.cjs",
+    "start": "electron .",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "yahoo-finance2": "^4.0.2"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "4.2.0",
+    "@eslint/js": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@testing-library/user-event": "latest",
+    "@vitejs/plugin-react": "latest",
+    "@vitest/coverage-v8": "latest",
+    "concurrently": "latest",
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "eslint-plugin-react-refresh": "latest",
+    "globals": "latest",
+    "jsdom": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "recharts": "latest",
+    "vite": "latest",
+    "vitest": "latest",
+    "wait-on": "latest"
+  },
+  "build": {
+    "appId": "dev.chasec.ordocor",
+    "productName": "OrdoCor",
+    "directories": {
+      "output": "../release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "build/ordocor_icon.ico",
+      "package.json"
+    ],
+    "electronDist": "node_modules/electron/dist",
+    "extraResources": [
+      { "from": "../LICENSE", "to": "LICENSE" },
+      { "from": "../NOTICE", "to": "NOTICE" }
+    ],
+    "npmRebuild": false,
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "build/ordocor_icon.ico",
+      "artifactName": "OrdoCor.exe"
+    }
+  }
+}

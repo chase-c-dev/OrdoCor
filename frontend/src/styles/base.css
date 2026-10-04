@@ -1,0 +1,159 @@
+:root,
+[data-theme="moonlit"] {
+  --sidebar-width: 14rem;
+  --page-max-width: 92.5rem;
+  --page-padding-inline: clamp(1.125rem, 3vw, 2.625rem);
+  --page-padding-block: clamp(1.5rem, 3vw, 2.375rem);
+  --bg: #101218;
+  --surface: #171a22;
+  --surface-2: #1e222c;
+  --surface-3: #252a35;
+  --text: #f2f0e9;
+  --muted: #a8a9b3;
+  --line: #343944;
+  --accent: #9aa7ff;
+  --accent-strong: #bdc5ff;
+  --accent-soft: #252b4d;
+  --second: #73c6b2;
+  --danger: #ee7b83;
+  --gain: #75d39b;
+  --loss: #f08383;
+  --shadow: rgba(0, 0, 0, 0.34);
+}
+
+[data-theme="woodland"] {
+  --bg: #111713;
+  --surface: #18201a;
+  --surface-2: #202a22;
+  --surface-3: #29352b;
+  --text: #edf1e8;
+  --muted: #aab5a6;
+  --line: #3a483c;
+  --accent: #9fc889;
+  --accent-strong: #c3dfa9;
+  --accent-soft: #283a29;
+  --second: #d3b16f;
+  --danger: #dd8177;
+  --gain: #8bd29a;
+  --loss: #e4867f;
+}
+
+[data-theme="cathedral"] {
+  --bg: #151215;
+  --surface: #1e191e;
+  --surface-2: #282128;
+  --surface-3: #322a32;
+  --text: #f3ece8;
+  --muted: #b5a8af;
+  --line: #493b47;
+  --accent: #c49acb;
+  --accent-strong: #e0bde4;
+  --accent-soft: #3a273c;
+  --second: #84b8bd;
+  --danger: #e08080;
+  --gain: #82cda1;
+  --loss: #e38787;
+}
+
+[data-theme="hearth"] {
+  --bg: #171411;
+  --surface: #211c18;
+  --surface-2: #2a231e;
+  --surface-3: #352c25;
+  --text: #f4eee6;
+  --muted: #b8aa9c;
+  --line: #4b4036;
+  --accent: #d0a36c;
+  --accent-strong: #e6c494;
+  --accent-soft: #3e3021;
+  --second: #87b2a0;
+  --danger: #df7d73;
+  --gain: #8bcc9a;
+  --loss: #e3847b;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--surface-2);
+}
+
+*::-webkit-scrollbar {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--surface-2);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 2px solid var(--surface-2);
+  border-radius: 0.1875rem;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-strong);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--surface-2);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+button {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-family: Georgia, serif;
+  font-size: 3.125rem;
+  line-height: 1;
+  margin-bottom: 0.625rem;
+}
+
+h2 {
+  font-size: 1.3125rem;
+  margin-bottom: 0.25rem;
+}
+
+h3 {
+  font-size: 0.9375rem;
+}
+
+a {
+  color: var(--accent-strong);
+  display: inline-flex;
+  gap: 0.375rem;
+  align-items: center;
+}

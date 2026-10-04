@@ -160,7 +160,7 @@ Tables:
 ## Settings
 
 Settings includes database backup/restore controls, the last successful backup time, optional
-password controls, and a persistent color palette selector.
+password controls, screen-capture resistance, and a persistent color palette selector.
 
 Password controls:
 
@@ -170,10 +170,10 @@ Password controls:
 
 Available palettes:
 
-- Medieval
-- Woodland
 - Moonlit
-- Rosewood
+- Woodland
+- Cathedral
+- Hearth
 
 Moonlit is the default for new users. The selected palette is stored in the `app_settings`
 table, becomes the user's default, and is applied at the next launch.

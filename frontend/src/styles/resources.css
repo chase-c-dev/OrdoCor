@@ -1,0 +1,100 @@
+.panel,
+.table-wrap,
+.recipe-book {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 1rem 2.25rem var(--shadow);
+}
+
+.table-wrap {
+  overflow-x: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+th {
+  color: var(--muted);
+  background: var(--surface-2);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.6875rem 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+td {
+  padding: 0.8125rem;
+  border-top: 1px solid var(--line);
+  color: #dcdde1;
+}
+
+td small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.625rem;
+  margin-top: 0.1875rem;
+  white-space: nowrap;
+}
+
+tbody tr {
+  cursor: pointer;
+  outline: 0;
+  transition: background 0.12s ease;
+}
+
+tbody tr:hover,
+tbody tr:focus {
+  background: var(--surface-2);
+}
+
+tbody tr.ready {
+  box-shadow: inset 0.1875rem 0 var(--gain);
+  background: color-mix(in srgb, var(--gain) 8%, var(--surface));
+}
+
+.gain {
+  color: var(--gain);
+  font-weight: 700;
+}
+
+.loss {
+  color: var(--loss);
+  font-weight: 700;
+}
+
+.empty-state {
+  min-height: 11.25rem;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.4375rem;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  background: var(--surface);
+}
+
+.empty-state strong {
+  color: var(--text);
+  font-size: 1.0625rem;
+}
+
+.empty-compact {
+  color: var(--muted);
+  padding: 1.125rem 0.25rem;
+}
+
+.notice {
+  margin: 0.75rem 0;
+  padding: 0.6875rem 0.8125rem;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.notice.error,
+.form-error {
+  color: var(--danger);
+}

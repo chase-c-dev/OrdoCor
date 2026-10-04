@@ -1,0 +1,32 @@
+const text = (key, label, options = {}) => ({ key, label, type: 'text', ...options })
+const money = (key, label) => ({ key, label, type: 'number', step: '0.01', format: 'money' })
+const number = (key, label, step = '1') => ({ key, label, type: 'number', step })
+const date = (key, label) => ({ key, label, type: 'date' })
+const notes = (key = 'notes', label = 'Notes') => ({ key, label, type: 'textarea', wide: true })
+
+export const resources = {
+  accounts: { title: 'Accounts', singular: 'Account', description: 'Financial accounts grouped by institution.', fields: [text('institution', 'Institution', { required: true }), text('name', 'Account Name', { required: true }), { key: 'account_type', label: 'Type', type: 'select', options: ['brokerage', 'savings', 'checking', 'credit'] }, notes()] },
+  stocks: { title: 'Stocks', singular: 'Stock', description: 'Open positions and stocks you currently own.', market: true, symbol: 'ticker', name: 'company_name', fields: [text('company_name', 'Stock Name', { required: true }), text('ticker', 'Ticker', { required: true }), date('purchase_date', 'Purchase Date'), money('purchase_price', 'Purchase Price'), number('shares', 'Shares', '0.0001'), money('target_sell_price', 'Target Sell Price'), notes()] },
+  'stock-watchlist': { title: 'Stock Watchlist', singular: 'Stock', description: 'Track current prices against the price you want to pay.', market: true, watchlist: true, symbol: 'ticker', name: 'company_name', fields: [text('company_name', 'Stock Name', { required: true }), text('ticker', 'Ticker', { required: true }), money('target_buy_price', 'Target Buy Price'), notes()] },
+  'mutual-funds': { title: 'Mutual Funds', singular: 'Mutual Fund', description: 'Open positions and mutual funds you currently own.', market: true, symbol: 'symbol', name: 'fund_name', fields: [text('fund_name', 'Fund Name', { required: true }), text('symbol', 'Symbol', { required: true }), date('purchase_date', 'Purchase Date'), money('purchase_price', 'Purchase Price'), number('shares', 'Shares', '0.0001'), notes()] },
+  'mutual-fund-watchlist': { title: 'Mutual Fund Watchlist', singular: 'Mutual Fund', description: 'Compare live fund prices with your target purchase price.', market: true, watchlist: true, symbol: 'symbol', name: 'fund_name', fields: [text('fund_name', 'Fund Name', { required: true }), text('symbol', 'Symbol', { required: true }), money('target_buy_price', 'Target Buy Price'), notes()] },
+  banking: { title: 'Banking', singular: 'Certificate of Deposit', description: 'Certificate of deposit terms and maturity values.', fields: [text('product_name', 'CD Name', { required: true }), text('institution', 'Bank', { required: true }), date('open_date', 'Open Date'), money('principal', 'Opening Amount'), number('interest_rate', 'Interest Rate (%)', '0.01'), date('maturity_date', 'Maturity Date'), money('maturity_value', 'Maturity Value'), notes()] },
+  collectibles: { title: 'Collectibles', singular: 'Collectible', description: 'Collectibles you would like to acquire.', fields: [text('item_name', 'Collectible Name', { required: true }), text('category', 'Type'), money('target_price', 'Expected Price'), number('quantity', 'Quantity'), text('purchase_link', 'Purchase Link', { type: 'url' }), notes()] },
+  plans: { title: 'Investment Plans', singular: 'Investment Plan', description: 'Future stock and mutual fund purchases.', fields: [text('idea_name', 'Investment', { required: true }), { key: 'investment_type', label: 'Type', type: 'select', options: ['Stock', 'Mutual Fund'] }, money('desired_purchase_price', 'Desired Share Price'), number('desired_shares', 'Desired Shares', '0.0001'), date('target_date', 'Target Date'), { key: 'status', label: 'Status', type: 'select', options: ['researching', 'watching', 'ready', 'paused'] }, notes()] },
+  projects: { title: 'Projects', singular: 'Project', description: 'The work and ideas currently in motion.', card: true, fields: [text('name', 'Project Name', { required: true }), notes('description', 'Description')] },
+  wishlist: { title: 'Wishlist', singular: 'Wishlist Item', description: 'Products you may want to purchase.', fields: [text('name', 'Product', { required: true }), text('category', 'Category'), money('estimated_price', 'Estimated Price'), number('quantity', 'Quantity'), notes()] },
+  travel: { title: 'Travel', singular: 'Destination', description: 'Countries and cities you hope to visit.', fields: [text('country', 'Country'), text('city', 'City'), { key: 'priority', label: 'Priority', type: 'select', options: ['High', 'Medium', 'Low'] }, text('target_season', 'Target Season'), number('target_year', 'Target Year'), notes()] },
+  'house-reminders': { title: 'Tax & Insurance', singular: 'Reminder', fields: [text('name', 'Bill or Reminder', { required: true }), text('reminder_type', 'Type'), date('due_date', 'Due Date'), money('amount', 'Amount'), notes()] },
+  'house-maintenance': { title: 'Maintenance', singular: 'Maintenance Item', fields: [text('title', 'Maintenance Item', { required: true }), text('frequency', 'Frequency'), date('due_date', 'Due Date'), text('video_url', 'YouTube or Reference Link', { type: 'url' }), notes()] },
+  'house-improvements': { title: 'Improvements', singular: 'Improvement', fields: [text('name', 'Improvement', { required: true }), { key: 'priority', label: 'Priority', type: 'select', options: ['High', 'Medium', 'Low'] }, money('estimated_cost', 'Estimated Cost'), notes()] },
+  vehicles: { title: 'Vehicles', singular: 'Vehicle', fields: [text('name', 'Vehicle Name', { required: true }), text('make', 'Make'), text('model', 'Model'), number('vehicle_year', 'Year'), text('vin', 'VIN'), notes()] },
+  'vehicle-maintenance': { title: 'Maintenance', singular: 'Maintenance Item', fields: [text('title', 'Maintenance Item', { required: true }), date('due_date', 'Due Date'), text('video_url', 'YouTube or Reference Link', { type: 'url' }), notes()] },
+  'vehicle-wishlist': { title: 'Wishlist', singular: 'Vehicle Wishlist Item', fields: [text('item_name', 'Item', { required: true }), text('category', 'Category'), money('estimated_price', 'Estimated Price'), notes()] },
+}
+
+export function displayValue(field, value) {
+  if (value === null || value === undefined || value === '') return '—'
+  if (field.format === 'money') return Number(value).toLocaleString(undefined, { style: 'currency', currency: 'USD' })
+  if (field.type === 'select') return String(value).replace(/\b\w/g, (letter) => letter.toUpperCase())
+  return String(value)
+}

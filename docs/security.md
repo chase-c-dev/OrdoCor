@@ -1,100 +1,54 @@
 # Security and Privacy
 
-OrdoCor is designed as an offline-first personal life management app. The default assumption is
-that personal data should stay on the user's computer unless the user intentionally creates or
-shares a backup.
+OrdoCor is offline-first: personal information stays on the user's computer unless the user
+intentionally copies or shares a backup.
 
-## Offline-First Benefits
+## Offline Benefits
 
-Most OrdoCor data is created, stored, viewed, and edited locally:
+TODOs, calendar items, accounts, purchase records, recipes, projects, wishlists, travel plans,
+house information, vehicle information, settings, and images are stored locally. OrdoCor has no
+cloud account, sync service, telemetry, analytics, hosted web interface, or local HTTP server. This
+reduces exposure to account takeover, cloud breaches, remote logging, and third-party retention.
 
-- Home TODOs, calendar items, and upcoming items
-- Accounts, purchase records, plans, collectibles, CDs, and notes
-- Recipes and recipe images
-- Projects, wishlist items, and travel plans
-- House reminders, maintenance, and improvements
-- Vehicle records, maintenance, and wishlist items
-- Settings, selected theme, optional password metadata, and backup timestamps
-
-Because this information is stored locally, OrdoCor does not need a cloud account, remote login,
-server sync, telemetry, analytics, or cloud backup service. This reduces exposure to remote account
-takeover, cloud database breaches, server-side logging, and third-party data retention.
+A dedicated computer that never connects to the internet provides the smallest network exposure.
+OrdoCor also remains useful and protected on an online Windows computer.
 
 ## Online Market Data
 
-The Investing section can refresh live market information for stocks and mutual funds. That live
-stock and mutual fund data is not available offline. When online refresh runs, OrdoCor sends the
-saved ticker or mutual fund symbol to Yahoo Finance through `yfinance`.
+Live stock and mutual-fund information is not available offline. When a refresh runs, OrdoCor sends
+the saved ticker or fund symbol to Yahoo Finance. It does not send purchase prices, share counts,
+targets, gains, notes, account names, recipes, or other life records. Cached chart history and the
+last successful values remain available when offline.
 
-OrdoCor does not send purchase prices, share counts, target prices, gains, notes, account names, or
-other personal records with those market-data requests. The last successful market refresh and
-cached chart history may remain visible while offline, but new live prices, live returns, dividend
-yield updates, and refreshed charts require internet access.
+## Desktop Protections
 
-## Local Database Protections
+- Electron loads bundled React files directly; no network-facing OrdoCor server exists.
+- The renderer is sandboxed with Node integration disabled and context isolation enabled.
+- A narrow preload bridge exposes allowlisted operations to React.
+- SQL resource names are allowlisted and record values are parameterized.
+- External links open through the operating system instead of navigating the app window.
+- Single-instance locking avoids two processes writing the same database concurrently.
+- User-facing failures suppress raw paths and internal provider or operating-system details.
 
-OrdoCor stores app data in a SQLite database under the user's local app data directory:
+## Screen Capture
 
-```text
-C:\Users\<User>\AppData\Local\OrdoCor\ordocor.sqlite3
-```
+Native Electron content protection is enabled by default. On supported Windows versions it asks
+the operating system to exclude the OrdoCor window from screenshots and screen sharing. The user
+can disable **Screen Capture Resistance** in Settings when intentionally sharing OrdoCor. The saved
+choice becomes the next-launch default.
 
-On Windows, OrdoCor attempts to harden the database file by applying current-user file permissions
-and Windows file encryption after database initialization.
+## Passwords and Backups
 
-## Protected Backups
-
-Backups are created from Settings and are single protected files, usually named:
-
-```text
-ordocor_backup.ordocorbackup
-```
-
-OrdoCor uses SQLite's backup API to create a consistent backup while the database is open. The
-backup payload is then protected with the current Windows user's local data-protection keys. This
-keeps backup creation low-friction while making copied backup files harder to read outside the
-intended Windows user profile.
-
-Settings shows the last successful backup date and time. Restore validates that a selected backup
-is readable, passes SQLite integrity checks, and contains the required OrdoCor tables before
-replacing the current database.
-
-## Optional App Password
-
-On first entry, OrdoCor offers the user the choice to create an app password or skip password setup.
-Settings can later enable, change, or disable the password.
-
-Passwords are never stored in plaintext. OrdoCor stores only a random salt, PBKDF2 iteration count,
-and derived password hash in `app_settings`.
-
-This password is an app-entry gate. It helps prevent casual access to an already installed OrdoCor
-app, but it does not replace full database encryption.
-
-## Screen Capture Resistance
-
-On Windows, OrdoCor asks the operating system to exclude supported OrdoCor windows from common
-screen capture paths. This can help reduce accidental exposure during screenshots or screen
-sharing.
-
-This setting is enabled by default. It can be turned off from Settings when the user intentionally
-wants to share or record the OrdoCor window, and the preference is saved for future launches.
-
-This is best-effort protection. It cannot stop someone from photographing the screen, and it is not
-a defense against malware with sufficient access to the same Windows session.
-
-## Sanitized Error Output
-
-User-facing backup, restore, and market-data failures avoid showing raw operating-system exception
-details, local file paths, provider internals, or other potentially sensitive text. This helps keep
-private local information out of dialog messages, screenshots, and support conversations.
+The optional app password is hashed with PBKDF2-SHA256, a random salt, and 310,000 iterations. It
+is an entry gate and is never stored in plaintext. Protected backups use an AES-256-GCM data key
+wrapped by Electron `safeStorage` for the current operating-system account. Restore checks database
+integrity and the expected schema before replacing local data. Settings displays the last successful
+backup time.
 
 ## Security Limits
 
-No local desktop app can fully protect data from malware already running as the same unlocked
-Windows user. While OrdoCor and Windows can read the data, sufficiently privileged malware may be
-able to read it too.
-
-The current protections are intended to reduce risk from copied files, exposed backups, other local
-Windows users, accidental screenshots, casual access, and unnecessary network exposure. Stronger
-protection against same-user malware or offline database extraction would require a full encrypted
-database layer, such as a SQLCipher-style database key.
+No local application can fully protect information from malware already running with the same or
+higher privileges as the unlocked Windows user. The live SQLite database is not fully encrypted at
+rest, and screen-capture exclusion is an operating-system request rather than an absolute guarantee.
+Use a supported Windows version, a secured account, current malware protection, disk encryption,
+and reliable backups for defense in depth.

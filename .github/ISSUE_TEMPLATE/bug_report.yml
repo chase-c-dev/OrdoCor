@@ -53,8 +53,8 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Operating system, Python version, and any relevant runtime details.
-      placeholder: Windows 11, Python 3.12
+      description: Windows version and any relevant device or display details.
+      placeholder: Windows 11, 1920x1080 display
     validations:
       required: false
   - type: textarea

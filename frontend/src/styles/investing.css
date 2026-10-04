@@ -1,0 +1,162 @@
+.security-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.metric {
+  background: var(--surface-2);
+  padding: 0.75rem 0.875rem;
+  min-width: 0;
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.metric strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+  gap: 0.875rem;
+  align-items: stretch;
+}
+
+.chart-panel,
+.notes-panel {
+  min-width: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 1rem;
+}
+
+.notes-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.segmented {
+  display: flex;
+  align-items: flex-start;
+}
+
+.segmented button {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-right: 0;
+  padding: 0.375rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.6875rem;
+}
+
+.segmented button:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.segmented button.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.chart-empty {
+  height: clamp(20rem, 42dvh, 30rem);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.chart-canvas {
+  height: clamp(20rem, 42dvh, 30rem);
+  min-width: 0;
+}
+
+.notes-panel textarea {
+  flex: 1;
+  min-height: clamp(16rem, 34dvh, 24rem);
+  resize: vertical;
+}
+
+.notes-panel p {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  margin: 0.5rem 0 0;
+}
+
+.disclosure {
+  margin-top: 0.875rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6875rem 0.8125rem;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+
+.disclosure svg {
+  transition: transform 0.2s;
+}
+
+.disclosure .rotated {
+  transform: rotate(180deg);
+}
+
+.fundamentals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  padding-top: 1px;
+  background: var(--line);
+}
+
+.analyst-panel {
+  display: grid;
+  grid-template-columns: minmax(16.25rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.recommendation-chart {
+  min-width: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 0.875rem 0.75rem 0.375rem;
+}
+
+.recommendation-chart-canvas {
+  height: clamp(12rem, 26vh, 14.375rem);
+}
+
+.analyst-recommendations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.0625rem, 1fr));
+  gap: 1px;
+  align-content: start;
+  background: transparent;
+}
+
+.analyst-recommendations .metric {
+  border: 1px solid var(--line);
+}

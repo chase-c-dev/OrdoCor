@@ -1,56 +1,46 @@
 # OrdoCor Life Management Application
 
-**OrdoCor** is a private, offline-first desktop app for organizing everyday life in one place.
+**OrdoCor** is a private, offline-first Windows life organizer. The name combines **Ordo**
+(order, rows, series, and structure) with **Cor** (core or heart).
 
-**Release Version:** 1.0
+**Release:** 1.0
 
-## What OrdoCor Helps Manage
+## What It Manages
 
-- **Home:** TODOs, yearly calendar, and upcoming items
-- **Investing:** accounts, stocks, mutual funds, CDs, collectibles, and investment plans
-- **Recipes:** favorite recipes in a cookbook-style view
-- **Projects:** active personal projects
-- **Wishlist:** products you want to buy
-- **Travel:** countries and cities you want to visit
-- **House:** tax and insurance reminders, maintenance, and improvements
-- **Vehicle:** vehicles, maintenance, and wishlist items
+- Home TODOs, a year calendar, and the next seven days
+- Financial accounts, investments, watchlists, CDs, collectibles, and investment plans
+- Recipes with categories and images
+- Projects, product wishlists, and travel ideas
+- House bills, maintenance, and improvements
+- Vehicles, maintenance links, and vehicle wishlists
 
-## Privacy and Security
+## Private and Offline-First
 
-OrdoCor is built to keep personal information local.
+OrdoCor is a local React desktop application. Personal information is stored in a SQLite database
+on the computer, separate from the executable. There is no account, cloud sync, telemetry,
+analytics, web server, or remote OrdoCor service.
 
-- Your data is stored on your computer in a local SQLite database.
-- There is no cloud account, server sync, telemetry, analytics, or cloud backup.
-- For the strongest security, OrdoCor works very well on a dedicated offline computer that is
-  never connected to the internet.
-- On an online computer, OrdoCor still keeps personal records local while offering online features
-  like live stock and mutual fund market data.
-- Backups are created manually from Settings.
-- On Windows, OrdoCor applies local file protections and creates protected backup files.
-- You can optionally enable an OrdoCor password.
-- OrdoCor attempts to reduce screen-capture exposure on supported Windows systems.
-- Error messages avoid showing sensitive file paths or raw system details.
+It works especially well on a dedicated computer that never connects to the internet. On an
+online computer, only ticker symbols are sent to Yahoo Finance when refreshing stock or mutual
+fund information. Purchase details, notes, accounts, recipes, and other records remain local.
+Live prices and chart refreshes are unavailable offline; the rest of OrdoCor continues to work.
 
-The only online feature is live market data for stocks and mutual funds. When that refreshes,
-OrdoCor sends the ticker or fund symbol to Yahoo Finance through `yfinance`. Purchase prices,
-share counts, gains, notes, account names, and other personal records stay local.
+See [Security and Privacy](docs/security.md) for the complete security model.
 
-Live stock and mutual fund prices are not available offline. Cached values may remain visible, but
-fresh market prices and chart updates require internet access.
+## Download
 
-## Run the App
+Non-developers can download `OrdoCor.exe` from the latest GitHub release and run it directly on
+Windows. The database remains under the current Windows profile when the executable is replaced.
 
-Non-developers should use the latest executable from GitHub Releases:
+## Run From Source
 
-[Download the latest OrdoCor release](https://github.com/chase-c-dev/Lifecore/releases/latest)
-
-Developers can run OrdoCor from source:
+Prerequisites: Node.js 22 or newer and Corepack.
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-python -m ordocor
+cd frontend
+corepack enable
+corepack pnpm install --frozen-lockfile
+corepack pnpm dev
 ```
 
 ## Package the Executable
@@ -58,62 +48,57 @@ python -m ordocor
 PowerShell:
 
 ```powershell
-python -m PyInstaller `
-  --name OrdoCor `
-  --windowed `
-  --onefile `
-  --icon src\ordocor\assets\ordocor_icon.ico `
-  --collect-data ordocor `
-  src\ordocor\main.py
+cd frontend
+corepack enable
+corepack pnpm install --frozen-lockfile
+corepack pnpm package
 ```
 
 Command Prompt:
 
 ```cmd
-python -m PyInstaller ^
-  --name OrdoCor ^
-  --windowed ^
-  --onefile ^
-  --icon src\ordocor\assets\ordocor_icon.ico ^
-  --collect-data ordocor ^
-  src\ordocor\main.py
+cd frontend
+corepack enable
+corepack pnpm install --frozen-lockfile
+corepack pnpm package
 ```
 
-The executable is created at:
-
-```text
-dist\OrdoCor.exe
-```
-
-## Documentation
-
-- [Security and Privacy](docs/security.md)
-- [Database and Backups](docs/database.md)
-- [Life Modules](docs/life_modules.md)
-- [Investing Module](docs/investing_module.md)
-- [Development](docs/development.md)
-- [Architecture](docs/architecture.md)
-
-## License
-
-OrdoCor is released under a non-commercial public modification license. You may view, use, copy,
-and modify the code for non-commercial purposes.
-
-Requirements:
-
-- Credit `chase-c-dev` for the original code.
-- Do not sell the app, include it in a paid product, or use it commercially without permission.
-- Any modifications, forks, or derivative versions must make their complete source code public.
-- Modified versions must keep the same license terms.
-
-See [LICENSE](LICENSE) for the full license.
+The portable executable is created at `release\OrdoCor.exe`. End users do not need Node.js.
 
 ## Developer Checks
 
 ```powershell
-python -m ruff check .
-python -m ruff format --check .
-python -m pytest
+cd frontend
+corepack pnpm lint
+corepack pnpm test
+corepack pnpm build
 ```
 
-Tests use isolated temporary databases and do not modify personal OrdoCor data.
+Vitest enforces at least 97% line, statement, and function coverage for the covered renderer
+modules. Native SQLite, password, and protected-backup behavior also has automated tests. GitHub
+Actions runs lint, tests, production build, and Windows executable packaging on pushes and pull
+requests.
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Development](docs/development.md)
+- [Database and Backups](docs/database.md)
+- [Security and Privacy](docs/security.md)
+- [Investing](docs/investing_module.md)
+- [Life Modules](docs/life_modules.md)
+
+## License
+
+OrdoCor is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). You may use, modify, and
+redistribute it for purposes permitted by that license. Commercial use outside those permissions
+requires a separate license from the copyright owner. Copies must include the license text or its
+URL and preserve the `chase-c-dev` credit in [NOTICE](NOTICE).
+
+As the owner of the original code, `chase-c-dev` may use that code commercially and grant separate
+commercial licenses. Third-party dependencies and contributions owned by others remain subject
+to their own licenses and permissions.
+
+This is source-available software. PolyForm does not require modifications to be published and
+is not an open-source license. GitHub may display it as "Other" despite its standardized name and
+SPDX identifier, `PolyForm-Noncommercial-1.0.0`.

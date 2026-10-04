@@ -2,130 +2,49 @@
 
 ## Setup
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-```
-
-## Run the App
+Install Node.js 22 or newer, then run:
 
 ```powershell
-python -m ordocor
+cd frontend
+corepack enable
+corepack pnpm install --frozen-lockfile
+corepack pnpm dev
 ```
 
-## Run Tests
+Vite provides hot reload while Electron supplies the same native IPC and SQLite services used by
+the packaged application.
 
-From the repository root, run:
+## Tests and Linting
 
 ```powershell
-python -m pytest
+cd frontend
+corepack pnpm lint
+corepack pnpm test
+corepack pnpm build
 ```
 
-Pytest measures the `ordocor` package and fails if statement coverage drops below 100%. It also
-creates `coverage.xml` for CI and coverage tooling. Tests use temporary SQLite databases and Qt's
-offscreen platform, so they do not change the user's OrdoCor database or open GUI windows.
+Vitest covers renderer utilities and native database, password, and backup services using temporary
+SQLite databases. Tests never open the personal OrdoCor database and do not require market-data
+network access. ESLint checks React hooks and JavaScript. Covered renderer modules enforce at least
+97% line, statement, and function coverage.
 
-Temporary test files use the local `test_outputs/` directory. Successful test output is removed
-automatically because `tmp_path_retention_policy` is set to `failed`; output from failed tests is
-retained for debugging. `test_outputs/` is ignored by Git.
+Run `corepack pnpm run test:layout` from `frontend` to check the built stock-detail dialog in a
+hidden Electron window at 1920x1080, 1366x768, 800x600, and 390x844. This check uses synthetic
+stocks and chart data with a temporary profile. It verifies viewport sizing, centering, chart
+resizing, and visible content overflow without opening the personal database or accessing the
+network. Shared dialogs use React portals so page animations cannot constrain their size.
 
-Useful Pytest commands:
+## Packaging
 
 ```powershell
-# Run one test module
-python -m pytest tests/test_home.py
-
-# Run tests whose names contain a phrase
-python -m pytest -k backup
-
-# Show more detailed test names
-python -m pytest -v
+cd frontend
+corepack pnpm package
 ```
 
-Coverage remains enforced for these commands through `pyproject.toml`.
+Electron Builder creates the portable Windows executable at `release\OrdoCor.exe`. Generated
+`frontend/dist`, `release`, coverage, and dependency folders are ignored by Git.
 
-## Lint
-
-```powershell
-python -m ruff check .
-```
-
-## Format Check
-
-```powershell
-python -m ruff format --check .
-```
-
-To apply Ruff formatting locally, run `python -m ruff format .`.
-
-## Run All Quality Checks
-
-```powershell
-python -m ruff check .
-python -m ruff format --check .
-python -m pytest
-```
-
-GitHub Actions runs this same sequence on every push and pull request using Python 3.11 on
-Windows. The workflow first verifies that the installed package can import `ordocor.data`, which
-provides a clearer error if package installation or tracked source files are incomplete.
-
-## Test Configuration
-
-Test, coverage, and Ruff settings are centralized in `pyproject.toml`. Important generated files
-and directories are excluded through `.gitignore`:
-
-- `coverage.xml` contains the machine-readable coverage report.
-- `.coverage` is pytest-cov's local coverage data file.
-- `test_outputs/` contains temporary output retained from failed tests.
-- `.pytest_cache/` and `.ruff_cache/` contain tool caches.
-
-## Compile Check
-
-```powershell
-python -m compileall src tests
-```
-
-## Build Executable
-
-Executable packaging uses PyInstaller.
-
-```powershell
-python -m PyInstaller `
-  --name OrdoCor `
-  --windowed `
-  --onefile `
-  --icon src\ordocor\assets\ordocor_icon.ico `
-  --collect-data ordocor `
-  src\ordocor\main.py
-```
-
-The executable is created at `dist\OrdoCor.exe`. The `--collect-data ordocor` option includes
-bundled migration SQL files and app assets.
-
-## Source Layout
-
-```text
-src/ordocor/
-  app.py
-  config.py
-  main.py
-  data/
-    database.py
-    migrations/
-  services/
-    backup_service.py
-  ui/
-    main_window.py
-    theme.py
-    pages/
-```
-
-## Common Notes
-
-- The run command is `python -m ordocor`.
-- The visible app name is `OrdoCor`.
-- The package/import name is lowercase: `ordocor`.
-- The local database is stored under `%LOCALAPPDATA%\OrdoCor\ordocor.sqlite3`.
-- The full name `OrdoCor Life Management Application` is reserved for the README and GitHub.
+The executable includes the official PolyForm Noncommercial 1.0.0 license and OrdoCor's required
+attribution notices in its extracted `resources` directory. Distribute both root `LICENSE` and
+`NOTICE` files with source copies. Preserve the official license text; project attribution is
+declared separately in `NOTICE` using PolyForm's supported required-notice mechanism.
